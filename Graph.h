@@ -1,6 +1,7 @@
 #pragma once
 
 #include <set>
+#include <fstream>
 
 using namespace std;
 
@@ -19,6 +20,15 @@ public:
 
 	void addNode(Node* node)
 	{
+		nodes.insert(node);
+
+		return;
+	}
+
+	void addNode(string& name)
+	{
+		Node* node = new Node(name);
+
 		nodes.insert(node);
 
 		return;
@@ -74,9 +84,75 @@ public:
 		nodes.clear();
 	}
 
-private:
+	void full_clear()
+	{
 
-	std::set<Node*> nodes;
+	}
+
+	bool in(const string& name) const
+	{
+		for (auto i = nodes.begin(); i != nodes.end(); ++i)
+		{
+			if ((*i)->name == name)
+				return true;
+		}
+
+		return false;
+	}
+
+	Node* find(string& name)
+	{
+		for (auto i = nodes.begin(); i != nodes.end(); ++i)
+		{
+			if ((*i)->name == name)
+				return *i;
+		}
+
+		return nullptr;
+	}
+
+	bool empty()
+	{
+		if (nodes.size())
+			return false;
+		else
+			return true;
+	}
+
+	friend ifstream& operator>>(ifstream& in, Graph& graph)
+	{
+		string temp_name_1, temp_name_2;
+
+		while (!in.eof())
+		{
+			in >> temp_name_1 >> temp_name_2;
+
+			if (!graph.in(temp_name_1))
+				graph.addNode(temp_name_1);
+
+			if (!graph.in(temp_name_2))
+				graph.addNode(temp_name_2);
+
+			graph.addEdge(graph.find(temp_name_1), graph.find(temp_name_2));
+		}
+
+		return in;
+	}
+
+	friend ofstream& operator<<(ofstream& out, Graph& graph)
+	{
+		while (!graph.empty())
+		{
+			auto it = graph.begin();
+			for (auto i = (*it)->neighbours_begin(); i != (*it)->neighbours_end(); ++i)
+			{
+				out << (*it)->getName() << " " << (*i)->getName() << endl;
+			}
+			graph.removeNode(*it);
+		}
+
+		return out;
+	}
 
 	std::set<Node*>::const_iterator begin()
 	{
@@ -87,4 +163,8 @@ private:
 	{
 		return nodes.end();
 	}
+
+private:
+
+	std::set<Node*> nodes;
 };

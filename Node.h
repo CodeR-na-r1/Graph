@@ -19,6 +19,16 @@ public:
 		return this->name;
 	}
 
+	std::set<Node*>::const_iterator neighbours_begin() const
+	{
+		return this->neighbours.begin();
+	}
+
+	std::set<Node*>::const_iterator neighbours_end() const
+	{
+		return this->neighbours.end();
+	}
+
 	~Node()
 	{
 		neighbours.clear();
@@ -47,16 +57,6 @@ private:
 		this->neighbours.erase(neighbour);
 
 		return;
-	}
-
-	std::set<Node*>::const_iterator neighbours_begin()
-	{
-		return this->neighbours.begin();
-	}
-
-	std::set<Node*>::const_iterator neighbours_end()
-	{
-		return this->neighbours.end();
 	}
 
 	friend class Graph;
